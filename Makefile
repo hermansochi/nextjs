@@ -1,8 +1,11 @@
-init: docker-down-clear docker-build docker-up
+init: create-network docker-down-clear docker-build docker-up
 
-up:  create-network docker-up
+up:  docker-up
 down: docker-down rm-network
 restart: down up
+
+kill:
+	docker kill $(docker ps -aq) && docker rm $(docker ps -aq)
 
 create-network:
 	docker network create my_network
