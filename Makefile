@@ -1,14 +1,13 @@
-init: docker-down-clear \
-	docker-build docker-up \
+init: docker-down-clear docker-build docker-up
 
-up: docker-up
-down: docker-down
+up:  create-network docker-up
+down: docker-down rm-network
 restart: down up
 
-docker-create-network:
+create-network:
 	docker network create my_network
 
-docker-rm-network:
+rm-network:
 	docker network rm my_network
 
 images:
@@ -21,15 +20,13 @@ memory:
 	sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 
 docker-up:
-	docker compose -f docker-compose.dev.yml up
+	docker compose -f docker-compose.yml up
 
 docker-down:
-	docker compose -f docker-compose.dev.yml down --remove-orphans
-	docker-rm-network
+	docker compose -f docker-compose.yml down --remove-orphans
 
 docker-down-clear:
-	docker compose down -v --remove-orphans
+	docker compose -f docker-compose.yml down -v --remove-orphans
 
 docker-build:
-	docker-create-network
 	docker compose -f docker-compose.yml build
